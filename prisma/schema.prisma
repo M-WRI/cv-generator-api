@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                     Int              @id @default(autoincrement())
+  email                  String           @unique
+  password               String
+  username               String           @unique
+  role                   Role             @default(USER)
+  verified               Boolean          @default(false)
+  profiles               Profile[]
+  educations             Education[]
+  skills                 Skill[]
+  languages              Language[]
+  workExperiences        WorkExperience[]
+  cvs                    CV[]
+}
+
+model Profile {
+  id             Int      @id @default(autoincrement())
+  firstName      String
+  lastName       String
+  profileImage   String?
+  profileSummary String?
+  userId         Int
+  user           User     @relation(fields: [userId], references: [id])
+  cvs            CV[]     @relation("ProfileCVs")
+}
+
+model Education {
+  id                Int      @id @default(autoincrement())
+  degree            String
+  school            String
+  startMonth        Int
+  startYear         Int
+  endMonth          Int?
+  endYear           Int?
+  additionalInfo    String?
+  userId            Int
+  user              User     @relation(fields: [userId], references: [id])
+  cvs               CV[]     @relation("EducationCVs")
+}
+
+model Skill {
+  id         Int      @id @default(autoincrement())
+  skillName  String
+  skillLevel Int
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  cvs        CV[]     @relation("SkillCVs")
+}
+
+model Language {
+  id            Int      @id @default(autoincrement())
+  language      String
+  languageLevel Int
+  userId        Int
+  user          User     @relation(fields: [userId], references: [id])
+  cvs           CV[]     @relation("LanguageCVs")
+}
+
+model WorkExperience {
+  id              Int      @id @default(autoincrement())
+  companyName     String
+  position        String
+  startMonth      Int
+  startYear       Int
+  endMonth        Int?
+  endYear         Int?
+  workDescription String?
+  userId          Int
+  user            User     @relation(fields: [userId], references: [id])
+  cvs             CV[]     @relation("WorkExperienceCVs")
+}
+
+model CV {
+  id              Int               @id @default(autoincrement())
+  title           String
+  userId          Int
+  user            User              @relation(fields: [userId], references: [id])
+  profiles        Profile[]         @relation("ProfileCVs")
+  educations      Education[]       @relation("EducationCVs")
+  skills          Skill[]           @relation("SkillCVs")
+  languages       Language[]        @relation("LanguageCVs")
+  workExperiences WorkExperience[]  @relation("WorkExperienceCVs")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
