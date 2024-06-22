@@ -108,7 +108,9 @@ export const verifyEmail = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      return res.status(400).json({ message: "Invalid token" });
+      return res
+        .status(400)
+        .json(createErrorResponse("invalidVerificationToken", "general"));
     }
 
     await prisma.user.update({
@@ -119,7 +121,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
     res.status(200).json({ message: "Account verified, you can now log in" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json(createErrorResponse("internalServerError", "general"));
   }
 };
 
@@ -213,7 +215,6 @@ export const forgotPassword = async (req: Request, res: Response) => {
     await sgMail
       .send(msg)
       .then(() => {
-        console.log("Password reset email sent to:", email);
         res.status(200).json({ message: "Password reset email sent" });
       })
       .catch((error) => {
@@ -221,11 +222,12 @@ export const forgotPassword = async (req: Request, res: Response) => {
           "Error sending email:",
           error.response ? error.response.body.errors : error
         );
-        res.status(500).json({ message: "Error sending email" });
+        res
+          .status(500)
+          .json(createErrorResponse("emailSendingError", "general"));
       });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json(createErrorResponse("internalServerError", "general"));
   }
 };
 
@@ -244,7 +246,9 @@ export const resetPassword = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      return res.status(400).json({ message: "Invalid or expired token" });
+      return res
+        .status(400)
+        .json(createErrorResponse("expiredResetPasswordToken", "general"));
     }
 
     const hashedPassword = await hashPassword(newPassword);
@@ -261,6 +265,6 @@ export const resetPassword = async (req: Request, res: Response) => {
     res.status(200).json({ message: "Password reset successful" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json(createErrorResponse("internalServerError", "general"));
   }
 };
