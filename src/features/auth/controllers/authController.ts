@@ -175,3 +175,92 @@ export const deleteUser = async (req: Request, res: Response) => {
       .json([createErrorResponse("internalServerError", "general")]);
   }
 };
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  const { email } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetPasswordExpires = new Date(Date.now() + 3600000); // 1 hour
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        resetPasswordToken: resetToken,
+        resetPasswordExpires,
+      },
+    });
+
+    const msg = {
+      to: email,
+      from: {
+        email: process.env.EMAIL_FROM!,
+        name: "Your Service Name",
+      },
+      subject: "Password Reset",
+      text: `You requested a password reset. Please click the following link to reset your password: http://localhost:8000/api/auth/reset-password/${resetToken}`,
+      html: `<strong>You requested a password reset. Please click the following link to reset your password:</strong> <a href="http://localhost:8000/api/auth/reset-password/${resetToken}">Reset Password</a>`,
+    };
+
+    await sgMail
+      .send(msg)
+      .then(() => {
+        console.log("Password reset email sent to:", email);
+        res.status(200).json({ message: "Password reset email sent" });
+      })
+      .catch((error) => {
+        console.error(
+          "Error sending email:",
+          error.response ? error.response.body.errors : error
+        );
+        res.status(500).json({ message: "Error sending email" });
+      });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        resetPasswordToken: token,
+        resetPasswordExpires: {
+          gt: new Date(),
+        },
+      },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    const hashedPassword = await hashPassword(newPassword);
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetPasswordToken: null,
+        resetPasswordExpires: null,
+      },
+    });
+
+    res.status(200).json({ message: "Password reset successful" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

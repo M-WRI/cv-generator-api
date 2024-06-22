@@ -4,6 +4,8 @@ import {
   signIn,
   deleteUser,
   verifyEmail,
+  forgotPassword,
+  resetPassword,
 } from "../controllers/authController";
 import {
   authenticateToken,
@@ -13,7 +15,6 @@ import {
 const router = Router();
 
 router.post("/signup", signUp);
-router.get("/verify/:token", verifyEmail);
 router.post("/signin", signIn);
 router.delete(
   "/delete/:userId",
@@ -21,5 +22,8 @@ router.delete(
   authorizeUserOrAdmin,
   deleteUser
 );
+router.get("/verify/:token", verifyEmail);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password/:token", resetPassword);
 
 export default router;
