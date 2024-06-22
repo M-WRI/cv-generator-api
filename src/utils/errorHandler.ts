@@ -1,4 +1,7 @@
-export const createErrorResponse = (errorCode: string, location: string) => ({
+export const createErrorResponse = (
+  errorCode: string,
+  location: string
+): any => ({
   type: "error",
   errorCode,
   location,
