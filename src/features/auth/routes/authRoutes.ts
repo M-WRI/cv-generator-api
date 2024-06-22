@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { signUp, signIn, deleteUser } from "../controllers/authController";
+import {
+  signUp,
+  signIn,
+  deleteUser,
+  verifyEmail,
+} from "../controllers/authController";
 import {
   authenticateToken,
   authorizeUserOrAdmin,
@@ -8,6 +13,7 @@ import {
 const router = Router();
 
 router.post("/signup", signUp);
+router.get("/verify/:token", verifyEmail);
 router.post("/signin", signIn);
 router.delete(
   "/delete/:userId",
