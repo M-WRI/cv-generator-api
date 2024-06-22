@@ -2,9 +2,7 @@ import { Request, Response } from "express";
 import { createErrorResponse, handleValidationError } from "../../../utils";
 import { comparePassword } from "../utils/hash";
 import { generateToken } from "../utils/jwt";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "../../../prismaClient";
 
 const validateSignIn = (email: string, password: string): string[] => {
   const errors: string[] = [];

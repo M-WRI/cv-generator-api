@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { createErrorResponse } from "../../../utils";
-
-const prisma = new PrismaClient();
+import { prisma } from "../../../prismaClient";
 
 export const deleteUser = async (req: Request, res: Response) => {
   try {

@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import { createErrorResponse } from "../../../utils";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "../../../prismaClient";
 
 export const verifyEmail = async (req: Request, res: Response) => {
   const { token } = req.params;

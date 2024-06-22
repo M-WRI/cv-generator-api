@@ -1,10 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../prismaClient";
 import sgMail from "@sendgrid/mail";
 import crypto from "crypto";
 import { createErrorResponse } from "../../../utils";
 import { Request, Response } from "express";
-
-const prisma = new PrismaClient();
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 

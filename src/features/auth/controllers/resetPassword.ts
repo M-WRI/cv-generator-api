@@ -1,9 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../prismaClient";
 import { createErrorResponse } from "../../../utils";
 import { hashPassword } from "../utils/hash";
 import { Request, Response } from "express";
-
-const prisma = new PrismaClient();
 
 export const resetPassword = async (req: Request, res: Response) => {
   const { token } = req.params;
