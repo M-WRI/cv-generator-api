@@ -1,5 +1,12 @@
 import { Router } from "express";
-import { signUp, signIn, deleteUser } from "../controllers/authController";
+import {
+  signUp,
+  signIn,
+  deleteUser,
+  verifyEmail,
+  forgotPassword,
+  resetPassword,
+} from "../controllers/authController";
 import {
   authenticateToken,
   authorizeUserOrAdmin,
@@ -15,5 +22,8 @@ router.delete(
   authorizeUserOrAdmin,
   deleteUser
 );
+router.get("/verify/:token", verifyEmail);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password/:token", resetPassword);
 
 export default router;
