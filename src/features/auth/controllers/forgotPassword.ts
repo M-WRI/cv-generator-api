@@ -36,8 +36,8 @@ export const forgotPassword = async (req: Request, res: Response) => {
         name: "Your Service Name",
       },
       subject: "Password Reset",
-      text: `You requested a password reset. Please click the following link to reset your password: http://localhost:8000/api/auth/reset-password/${resetToken}`,
-      html: `<strong>You requested a password reset. Please click the following link to reset your password:</strong> <a href="http://localhost:8000/api/auth/reset-password/${resetToken}">Reset Password</a>`,
+      text: `You requested a password reset. Please click the following link to reset your password: http://localhost:5173/reset-password/${resetToken}`,
+      html: `<strong>You requested a password reset. Please click the following link to reset your password:</strong> <a href="http://localhost:5173/reset-password/${resetToken}">Reset Password</a>`,
     };
 
     await sgMail
