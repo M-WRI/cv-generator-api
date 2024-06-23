@@ -6,7 +6,7 @@ import {
   verifyEmail,
   forgotPassword,
   resetPassword,
-} from "../controllers/authController";
+} from "../controllers";
 import {
   authenticateToken,
   authorizeUserOrAdmin,
