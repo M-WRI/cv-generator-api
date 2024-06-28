@@ -1,6 +1,7 @@
 import { IRequest } from "../../../types/express";
 import { Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import { cvListSerializer } from "../serializer";
 
 const prisma = new PrismaClient();
 
@@ -195,16 +196,11 @@ export const getCVs = async (req: IRequest, res: Response) => {
   try {
     const cvs = await prisma.cV.findMany({
       where: { userId: userId! },
-      include: {
-        profiles: true,
-        educations: true,
-        skills: true,
-        languages: true,
-        workExperiences: true,
-      },
     });
 
-    res.status(200).json(cvs);
+    const serializedData = cvListSerializer(cvs);
+
+    res.status(200).json(serializedData);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }

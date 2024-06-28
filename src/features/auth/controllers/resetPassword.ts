@@ -20,7 +20,7 @@ export const resetPassword = async (req: Request, res: Response) => {
     if (!user) {
       return res
         .status(400)
-        .json(createErrorResponse("expiredResetPasswordToken", "general"));
+        .json([createErrorResponse("expiredResetPasswordToken", "general")]);
     }
 
     const hashedPassword = await hashPassword(newPassword);
@@ -37,6 +37,8 @@ export const resetPassword = async (req: Request, res: Response) => {
     res.status(200).json({ message: "Password reset successful" });
   } catch (error) {
     console.error(error);
-    res.status(500).json(createErrorResponse("internalServerError", "general"));
+    res
+      .status(500)
+      .json([createErrorResponse("internalServerError", "general")]);
   }
 };

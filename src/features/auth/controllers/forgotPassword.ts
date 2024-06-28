@@ -52,9 +52,11 @@ export const forgotPassword = async (req: Request, res: Response) => {
         );
         res
           .status(500)
-          .json(createErrorResponse("emailSendingError", "general"));
+          .json([createErrorResponse("emailSendingError", "general")]);
       });
   } catch (error) {
-    res.status(500).json(createErrorResponse("internalServerError", "general"));
+    res
+      .status(500)
+      .json([createErrorResponse("internalServerError", "general")]);
   }
 };
